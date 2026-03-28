@@ -450,8 +450,16 @@
         ai_key: form.ai_key.value
       };
       
-      // Look for custom backend API explicitly, fallback to localhost Python
-      const apiUrl = localStorage.getItem('API_URL') || 'http://127.0.0.1:5000/api/scan';
+      function resolveScanApiUrl() {
+        const custom = localStorage.getItem('API_URL');
+        if (custom) return custom;
+        const { protocol, hostname, origin } = window.location;
+        if (protocol === 'file:') return 'http://127.0.0.1:5000/api/scan';
+        if (hostname === 'localhost' || hostname === '127.0.0.1')
+          return `${origin}/api/scan`;
+        return 'https://cyberguard-api-grx6.onrender.com/api/scan';
+      }
+      const apiUrl = resolveScanApiUrl();
 
       try {
         const resp = await fetch(apiUrl, {
@@ -469,7 +477,7 @@
         rc.style.display = 'block';
         rc.innerHTML = `<div class="card" style="text-align:center; color: var(--bad);">
           Error connecting to scanner API:<br/><code>${err.message}</code><br/>
-          Ensure <b>http://127.0.0.1:5000</b> is running and Flask CORS is enabled.
+          Run <code>python app.py</code> and open <b>http://127.0.0.1:5000/</b>, or set <code>localStorage API_URL</code> to your API. Request URL: <b>${apiUrl}</b>
         </div>`;
       } finally {
         loading.style.display = 'none';

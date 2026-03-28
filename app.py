@@ -56,7 +56,8 @@ def _auto_update_urlhaus(ds_path: Path):
 
 def create_app() -> Flask:
     app = Flask(__name__)
-    CORS(app, resources={r"/api/*": {"origins": "*"}})
+    # Full CORS: r"/api/*" is regex (repeat "/"), so it does NOT match "/api/scan".
+    CORS(app)
     frontend_dir = Path(__file__).resolve().parent / "frontend"
     base = load_blocklist_file(_blocklist_path())
     
@@ -104,4 +105,8 @@ app = create_app()
 
 
 if __name__ == "__main__":
-    app.run(debug=True, host="127.0.0.1", port=5000)
+    port = int(os.environ.get("PORT", "5000"))
+    host = os.environ.get("FLASK_HOST", "127.0.0.1")
+    print(f"CyberGuard: open http://{host}:{port}/ in your browser.")
+    print("If port 5000 is in use (common on Windows), run: set PORT=5001 && python app.py")
+    app.run(debug=True, host=host, port=port)

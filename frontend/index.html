@@ -570,10 +570,16 @@
       };
 
 
-      const isLocal = window.location.protocol === 'file:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-      const apiUrl = isLocal
-        ? 'http://127.0.0.1:5000/api/scan'
-        : 'https://cyberguard-api-grx6.onrender.com/api/scan';
+      function resolveScanApiUrl() {
+        const custom = localStorage.getItem('API_URL');
+        if (custom) return custom;
+        const { protocol, hostname, origin } = window.location;
+        if (protocol === 'file:') return 'http://127.0.0.1:5000/api/scan';
+        if (hostname === 'localhost' || hostname === '127.0.0.1')
+          return `${origin}/api/scan`;
+        return 'https://cyberguard-api-grx6.onrender.com/api/scan';
+      }
+      const apiUrl = resolveScanApiUrl();
 
 
 
@@ -593,8 +599,8 @@
         rc.style.display = 'block';
         rc.innerHTML = `<div class="card" style="text-align:center; color: var(--bad);">
           Error connecting to scanner API:<br/><code>${err.message}</code><br/>
-          Start the server with <code>python app.py</code>, then open <b>http://127.0.0.1:5000/</b> (not the HTML file from disk).
-          Your API URL: <b>${apiUrl}</b>
+          Start the server with <code>python app.py</code>, then open the app at <b>http://127.0.0.1:5000/</b> (same host/port as the API), or set <code>localStorage.setItem('API_URL','http://127.0.0.1:5000/api/scan')</code> if you use another dev server.
+          Request URL: <b>${apiUrl}</b>
         </div>`;
       } finally {
         loading.style.display = 'none';
