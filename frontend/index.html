@@ -557,10 +557,10 @@
     function resolveScanApiUrl() {
       const custom = localStorage.getItem('API_URL');
       if (custom) return custom.replace(/\/$/, '') + '/api/scan';
-      const { protocol, hostname, origin } = window.location;
+      const { protocol, hostname } = window.location;
       if (protocol === 'file:') return 'http://127.0.0.1:5000/api/scan';
       if (hostname === 'localhost' || hostname === '127.0.0.1')
-        return `${origin}/api/scan`;
+        return 'http://127.0.0.1:5000/api/scan';
       return `${RENDER_API_BASE}/api/scan`;
     }
 

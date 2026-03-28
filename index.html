@@ -24,7 +24,9 @@
       --ok: #22c55e;
     }
 
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
     body {
       margin: 0;
@@ -76,13 +78,20 @@
     main::before {
       content: '';
       position: absolute;
-      top: 0; left: 0; width: 30px; height: 3px;
+      top: 0;
+      left: 0;
+      width: 30px;
+      height: 3px;
       background: var(--accent);
     }
+
     main::after {
       content: '';
       position: absolute;
-      bottom: 0; right: 0; width: 30px; height: 3px;
+      bottom: 0;
+      right: 0;
+      width: 30px;
+      height: 3px;
       background: var(--accent);
     }
 
@@ -126,7 +135,8 @@
       box-shadow: 0 0 20px rgba(56, 189, 248, 0.2) inset, 0 0 15px rgba(56, 189, 248, 0.3);
     }
 
-    input[type="text"], input[type="url"] {
+    input[type="text"],
+    input[type="url"] {
       flex: 1;
       background: transparent;
       border: none;
@@ -160,6 +170,7 @@
       transform: translateY(-2px);
       box-shadow: var(--glow);
     }
+
     button:active {
       transform: translateY(0);
     }
@@ -190,6 +201,7 @@
       font-family: 'Inter', sans-serif;
       transition: color 0.2s;
     }
+
     label.live-opt:hover {
       color: var(--accent);
     }
@@ -212,12 +224,15 @@
       border-color: var(--accent);
       box-shadow: 0 0 10px var(--accent);
     }
+
     .checkbox-custom:checked::after {
       content: '✔';
       position: absolute;
       color: #030712;
       font-size: 0.75rem;
-      top: 50%; left: 50%; transform: translate(-50%, -50%);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
       font-weight: bold;
     }
 
@@ -253,7 +268,10 @@
 
     .scanner-line {
       position: absolute;
-      top: 0; left: 0; width: 100%; height: 2px;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
       background: var(--accent);
       box-shadow: 0 0 15px var(--accent);
       animation: scan 2.5s ease-in-out infinite;
@@ -288,11 +306,13 @@
       color: var(--ok);
       border: 1px solid rgba(34, 197, 94, 0.3);
     }
+
     .verdict.suspicious {
       background: rgba(251, 191, 36, 0.15);
       color: var(--warn);
       border: 1px solid rgba(251, 191, 36, 0.3);
     }
+
     .verdict.likely_malicious {
       background: rgba(239, 68, 68, 0.15);
       color: var(--bad);
@@ -305,6 +325,7 @@
       font-size: 0.95rem;
       margin: 0;
     }
+
     .score strong {
       font-family: 'Orbitron', sans-serif;
       font-size: 1.2rem;
@@ -312,16 +333,24 @@
     }
 
     ul.findings {
-      margin: 0; padding-left: 0; list-style: none;
-      display: flex; flex-direction: column; gap: 0.75rem;
+      margin: 0;
+      padding-left: 0;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
     }
+
     ul.findings li {
       background: rgba(0, 0, 0, 0.2);
       padding: 0.85rem 1rem;
       border-radius: 8px;
       border-left: 3px solid var(--accent);
       font-size: 0.9rem;
-      display: flex; justify-content: space-between; align-items: center; gap: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
     }
 
     .code {
@@ -335,45 +364,133 @@
     }
 
     .live-details {
-      margin-top: 1.5rem; font-size: 0.85rem; color: var(--muted);
+      margin-top: 1.5rem;
+      font-size: 0.85rem;
+      color: var(--muted);
     }
+
     .live-details h3 {
-      font-family: 'Orbitron', sans-serif; font-size: 0.9rem; margin: 0 0 0.5rem; color: #94a3b8;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.9rem;
+      margin: 0 0 0.5rem;
+      color: #94a3b8;
     }
+
     .live-details pre {
-      margin: 0; padding: 1rem;
+      margin: 0;
+      padding: 1rem;
       background: rgba(0, 0, 0, 0.4);
-      border-radius: 8px; overflow-x: auto;
+      border-radius: 8px;
+      overflow-x: auto;
       font-family: 'Fira Code', monospace;
-      font-size: 0.75rem; border: 1px solid rgba(255, 255, 255, 0.05);
+      font-size: 0.75rem;
+      border: 1px solid rgba(255, 255, 255, 0.05);
       color: #7dd3fc;
     }
 
     p.caveat {
-      font-size: 0.75rem; color: var(--muted); margin: 1.5rem 0 0;
-      padding-top: 1rem; border-top: 1px solid rgba(255, 255, 255, 0.05); font-style: italic;
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin: 1.5rem 0 0;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      font-style: italic;
     }
 
-    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-    @keyframes scan { 0% { top: 0; opacity: 0; } 10% { opacity: 0.8; } 90% { opacity: 0.8; } 100% { top: 100%; opacity: 0; } }
-    @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes float {
+
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-10px);
+      }
+    }
+
+    @keyframes scan {
+      0% {
+        top: 0;
+        opacity: 0;
+      }
+
+      10% {
+        opacity: 0.8;
+      }
+
+      90% {
+        opacity: 0.8;
+      }
+
+      100% {
+        top: 100%;
+        opacity: 0;
+      }
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
 
     #loading {
-      display: none; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(3, 7, 18, 0.8); backdrop-filter: blur(5px); z-index: 50;
-      border-radius: 16px; justify-content: center; align-items: center; flex-direction: column;
+      display: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(3, 7, 18, 0.8);
+      backdrop-filter: blur(5px);
+      z-index: 50;
+      border-radius: 16px;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
     }
+
     .spinner {
-      width: 50px; height: 50px; border: 3px solid rgba(56, 189, 248, 0.1);
-      border-top-color: var(--accent); border-radius: 50%;
-      animation: spin 1s linear infinite; margin-bottom: 1rem;
+      width: 50px;
+      height: 50px;
+      border: 3px solid rgba(56, 189, 248, 0.1);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 1rem;
     }
-    @keyframes spin { 100% { transform: rotate(360deg); } }
+
+    @keyframes spin {
+      100% {
+        transform: rotate(360deg);
+      }
+    }
 
     .loading-text {
-      font-family: 'Orbitron', sans-serif; color: var(--accent); letter-spacing: 2px; animation: pulse 1.5s infinite;
+      font-family: 'Orbitron', sans-serif;
+      color: var(--accent);
+      letter-spacing: 2px;
+      animation: pulse 1.5s infinite;
     }
-    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.5;
+      }
+    }
   </style>
 </head>
 
@@ -414,7 +531,8 @@
             <input type="checkbox" class="checkbox-custom" name="virustotal" value="1" />
             Inject VirusTotal Reputation
           </label>
-          <input type="password" name="vt_key" class="api-key-input" placeholder="VirusTotal API Key (Optional Override)" autocomplete="new-password" />
+          <input type="password" name="vt_key" class="api-key-input"
+            placeholder="VirusTotal API Key (Optional Override)" autocomplete="new-password" />
         </div>
 
         <div class="option-group">
@@ -422,7 +540,8 @@
             <input type="checkbox" class="checkbox-custom" name="ai" value="1" />
             Inject OpenAI Analysis
           </label>
-          <input type="password" name="ai_key" class="api-key-input" placeholder="OpenAI API Key (Optional Override)" autocomplete="new-password" />
+          <input type="password" name="ai_key" class="api-key-input" placeholder="OpenAI API Key (Optional Override)"
+            autocomplete="new-password" />
         </div>
       </div>
     </form>
@@ -431,16 +550,64 @@
   </main>
 
   <script>
+    // ─── API URL ──────────────────────────────────────────────────────────────
+    // Update RENDER_API_BASE when you deploy to Render.
+    const RENDER_API_BASE = 'https://cyberguard-api-grx6.onrender.com';
+
+    function resolveScanApiUrl() {
+      const custom = localStorage.getItem('API_URL');
+      if (custom) return custom.replace(/\/$/, '') + '/api/scan';
+      const { protocol, hostname } = window.location;
+      if (protocol === 'file:') return 'http://127.0.0.1:5000/api/scan';
+      if (hostname === 'localhost' || hostname === '127.0.0.1')
+        return 'http://127.0.0.1:5000/api/scan';
+      return `${RENDER_API_BASE}/api/scan`;
+    }
+
+    // ─── Fetch with timeout + retry for Render cold starts ───────────────────
+    async function fetchWithTimeout(url, options, timeoutMs) {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), timeoutMs);
+      try {
+        return await fetch(url, { ...options, signal: controller.signal });
+      } finally {
+        clearTimeout(timer);
+      }
+    }
+
+    async function scanWithRetry(apiUrl, payload, onWarmingUp) {
+      // First attempt – 12 s (fast path)
+      try {
+        return await fetchWithTimeout(apiUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        }, 12000);
+      } catch (firstErr) {
+        // If aborted (timeout) or network error, assume Render cold start.
+        onWarmingUp();  // show warm-up message
+        // Second attempt – 60 s (enough for Render free tier to boot)
+        return await fetchWithTimeout(apiUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        }, 60000);
+      }
+    }
+
+    // ─── Form submit ──────────────────────────────────────────────────────────
     document.getElementById('scan-form').addEventListener('submit', async (e) => {
       e.preventDefault();
-      
+
       const loading = document.getElementById('loading');
+      const loadingText = document.querySelector('.loading-text');
       const rc = document.getElementById('result-container');
       const form = e.target;
-      
+
       loading.style.display = 'flex';
+      loadingText.textContent = 'ANALYZING THREATS...';
       rc.style.display = 'none';
-      
+
       const payload = {
         url: form.url.value,
         live: form.live.checked,
@@ -449,53 +616,51 @@
         vt_key: form.vt_key.value,
         ai_key: form.ai_key.value
       };
-      
-      function resolveScanApiUrl() {
-        const custom = localStorage.getItem('API_URL');
-        if (custom) return custom;
-        const { protocol, hostname, origin } = window.location;
-        if (protocol === 'file:') return 'http://127.0.0.1:5000/api/scan';
-        if (hostname === 'localhost' || hostname === '127.0.0.1')
-          return `${origin}/api/scan`;
-        return 'https://cyberguard-api-grx6.onrender.com/api/scan';
-      }
+
       const apiUrl = resolveScanApiUrl();
 
       try {
-        const resp = await fetch(apiUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
+        const resp = await scanWithRetry(apiUrl, payload, () => {
+          // Cold-start callback – update loading text
+          loadingText.textContent = 'WARMING UP API...';
         });
-        
+
         if (!resp.ok) throw Error(`HTTP error ${resp.status}`);
-        
+
         const data = await resp.json();
         renderResult(data);
       } catch (err) {
         console.error(err);
+        const isTimeout = err.name === 'AbortError';
         rc.style.display = 'block';
         rc.innerHTML = `<div class="card" style="text-align:center; color: var(--bad);">
-          Error connecting to scanner API:<br/><code>${err.message}</code><br/>
-          Run <code>python app.py</code> and open <b>http://127.0.0.1:5000/</b>, or set <code>localStorage API_URL</code> to your API. Request URL: <b>${apiUrl}</b>
+          <p style="font-size:1.1rem; margin:0 0 0.75rem;">⚠ ${isTimeout ? 'API timed out' : 'Connection failed'}</p>
+          <code style="font-size:0.8rem;">${err.message}</code>
+          <p style="margin:1rem 0 0; font-size:0.85rem; color:var(--muted);">
+            ${isTimeout
+              ? 'The Render free-tier API is taking too long to wake up. Wait 30 s and try again, or <a href="https://render.com" style="color:var(--accent)">check your Render dashboard</a>.'
+              : `Ensure the backend is running at <b>${apiUrl}</b> and Flask-CORS is enabled.`
+            }
+          </p>
         </div>`;
       } finally {
         loading.style.display = 'none';
+        loadingText.textContent = 'ANALYZING THREATS...';
       }
     });
 
     function renderResult(data) {
       const rc = document.getElementById('result-container');
-      
+
       let verdictClass = data.verdict;
       let verdictText = '';
       if (data.verdict === 'likely_safe') verdictText = '✓ SYSTEM CLEAN';
       else if (data.verdict === 'suspicious') verdictText = '⚠ ANOMALY DETECTED';
       else verdictText = '☠ DEADLY THREAT';
-      
-      let hostHtml = data.normalized_host ? 
+
+      let hostHtml = data.normalized_host ?
         `<p class="score" style="margin-bottom: 1rem;">Target Host: <code style="color:var(--accent)">${data.normalized_host}</code></p>` : '';
-        
+
       let findingsHtml = '';
       if (data.findings && data.findings.length > 0) {
         findingsHtml = `<ul class="findings">` + data.findings.map(f => `
@@ -507,7 +672,7 @@
       } else {
         findingsHtml = `<p class="score" style="text-align:center; padding: 1rem 0; color: var(--ok);">No heuristic signatures identified in path structure.</p>`;
       }
-      
+
       let featuresHtml = '';
       if (data.features) {
         featuresHtml = `
@@ -516,7 +681,7 @@
           <pre>${JSON.stringify(data.features, null, 2)}</pre>
         </div>`;
       }
-      
+
       let liveHtml = '';
       if (data.live) {
         liveHtml = `
@@ -525,12 +690,12 @@
           <pre>${JSON.stringify(data.live, null, 2)}</pre>
         </div>`;
       }
-      
+
       let caveatHtml = '';
       if (data.scoring_note) {
         caveatHtml = `<p class="caveat">${data.scoring_note}</p>`;
       }
-      
+
       rc.innerHTML = `
       <div class="card">
         <div class="scanner-line"></div>
@@ -548,4 +713,5 @@
     }
   </script>
 </body>
+
 </html>
