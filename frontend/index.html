@@ -569,7 +569,11 @@
         ai_key: form.ai_key.value
       };
 
-      const apiUrl = 'https://cyberguard-api-grx6.onrender.com/api/scan';
+
+      const isLocal = window.location.protocol === 'file:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+      const apiUrl = isLocal
+        ? 'http://127.0.0.1:5000/api/scan'
+        : 'https://cyberguard-api-grx6.onrender.com/api/scan';
 
 
 
