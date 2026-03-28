@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CyberGuard URL Scanner by Antigravity</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Inter:wght@300;400;500;600&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg: #030712;
+      --surface: rgba(17, 24, 39, 0.7);
+      --glass: rgba(15, 23, 42, 0.85);
+      --border: rgba(56, 189, 248, 0.2);
+      --glow: 0 0 20px rgba(56, 189, 248, 0.4);
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-hover: #0ea5e9;
+      --warn: #fbbf24;
+      --bad: #ef4444;
+      --ok: #22c55e;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      background-image:
+        radial-gradient(circle at 15% 50%, rgba(56, 189, 248, 0.15), transparent 25%),
+        radial-gradient(circle at 85% 30%, rgba(139, 92, 246, 0.12), transparent 25%),
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 30px 30px, 30px 30px;
+      color: var(--text);
+      line-height: 1.6;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 3rem 1rem;
+    }
+
+    .logo-container {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+      animation: float 6s ease-in-out infinite;
+    }
+
+    .logo-container img {
+      width: 120px;
+      height: 120px;
+      object-fit: contain;
+      filter: drop-shadow(0 0 15px rgba(56, 189, 248, 0.6));
+    }
+
+    main {
+      width: 100%;
+      max-width: 720px;
+      background: var(--glass);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2.5rem;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Cyber frame decoration */
+    main::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; width: 30px; height: 3px;
+      background: var(--accent);
+    }
+    main::after {
+      content: '';
+      position: absolute;
+      bottom: 0; right: 0; width: 30px; height: 3px;
+      background: var(--accent);
+    }
+
+    h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2rem;
+      font-weight: 700;
+      margin: 0 0 0.5rem;
+      text-align: center;
+      background: linear-gradient(135deg, #e0f2fe, #38bdf8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: 1px;
+    }
+
+    p.lead {
+      text-align: center;
+      color: var(--muted);
+      margin: 0 0 2rem;
+      font-size: 0.95rem;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .search-bar {
+      display: flex;
+      position: relative;
+      background: rgba(15, 23, 42, 0.5);
+      border-radius: 12px;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      padding: 0.5rem;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.3) inset;
+    }
+
+    .search-bar:focus-within {
+      border-color: var(--accent);
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.2) inset, 0 0 15px rgba(56, 189, 248, 0.3);
+    }
+
+    input[type="text"], input[type="url"] {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--text);
+      font-size: 1.1rem;
+      padding: 0.75rem 1rem;
+      outline: none;
+      font-family: 'Inter', sans-serif;
+    }
+
+    input::placeholder {
+      color: rgba(148, 163, 184, 0.5);
+    }
+
+    button {
+      background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+      color: #030712;
+      border: none;
+      border-radius: 8px;
+      padding: 0 1.5rem;
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--glow);
+    }
+    button:active {
+      transform: translateY(0);
+    }
+
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      background: rgba(0, 0, 0, 0.2);
+      padding: 1.5rem;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .option-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    label.live-opt {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 0.95rem;
+      color: #e2e8f0;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      transition: color 0.2s;
+    }
+    label.live-opt:hover {
+      color: var(--accent);
+    }
+
+    .checkbox-custom {
+      appearance: none;
+      width: 1.15rem;
+      height: 1.15rem;
+      border: 2px solid var(--muted);
+      border-radius: 4px;
+      background: transparent;
+      outline: none;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.2s;
+    }
+
+    .checkbox-custom:checked {
+      background: var(--accent);
+      border-color: var(--accent);
+      box-shadow: 0 0 10px var(--accent);
+    }
+    .checkbox-custom:checked::after {
+      content: '✔';
+      position: absolute;
+      color: #030712;
+      font-size: 0.75rem;
+      top: 50%; left: 50%; transform: translate(-50%, -50%);
+      font-weight: bold;
+    }
+
+    .api-key-input {
+      width: 100%;
+      padding: 0.55rem 0.8rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 6px;
+      background: rgba(0, 0, 0, 0.3);
+      color: var(--text);
+      font-size: 0.85rem;
+      font-family: 'Inter', sans-serif;
+      margin-left: 1.75rem;
+      width: calc(100% - 1.75rem);
+      transition: all 0.3s;
+    }
+
+    .api-key-input:focus {
+      outline: none;
+      border-color: rgba(56, 189, 248, 0.5);
+      background: rgba(0, 0, 0, 0.5);
+    }
+
+    .card {
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-top: 2rem;
+      position: relative;
+      animation: fadeUp 0.5s ease-out;
+    }
+
+    .scanner-line {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 2px;
+      background: var(--accent);
+      box-shadow: 0 0 15px var(--accent);
+      animation: scan 2.5s ease-in-out infinite;
+      z-index: 10;
+      opacity: 0.6;
+    }
+
+    .verdict-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .verdict {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.4rem 1rem;
+      border-radius: 8px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .verdict.likely_safe {
+      background: rgba(34, 197, 94, 0.15);
+      color: var(--ok);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+    }
+    .verdict.suspicious {
+      background: rgba(251, 191, 36, 0.15);
+      color: var(--warn);
+      border: 1px solid rgba(251, 191, 36, 0.3);
+    }
+    .verdict.likely_malicious {
+      background: rgba(239, 68, 68, 0.15);
+      color: var(--bad);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      box-shadow: 0 0 15px rgba(239, 68, 68, 0.2);
+    }
+
+    .score {
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin: 0;
+    }
+    .score strong {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.2rem;
+      color: var(--text);
+    }
+
+    ul.findings {
+      margin: 0; padding-left: 0; list-style: none;
+      display: flex; flex-direction: column; gap: 0.75rem;
+    }
+    ul.findings li {
+      background: rgba(0, 0, 0, 0.2);
+      padding: 0.85rem 1rem;
+      border-radius: 8px;
+      border-left: 3px solid var(--accent);
+      font-size: 0.9rem;
+      display: flex; justify-content: space-between; align-items: center; gap: 1rem;
+    }
+
+    .code {
+      font-size: 0.75rem;
+      font-family: monospace;
+      color: var(--accent);
+      background: rgba(56, 189, 248, 0.1);
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+
+    .live-details {
+      margin-top: 1.5rem; font-size: 0.85rem; color: var(--muted);
+    }
+    .live-details h3 {
+      font-family: 'Orbitron', sans-serif; font-size: 0.9rem; margin: 0 0 0.5rem; color: #94a3b8;
+    }
+    .live-details pre {
+      margin: 0; padding: 1rem;
+      background: rgba(0, 0, 0, 0.4);
+      border-radius: 8px; overflow-x: auto;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.75rem; border: 1px solid rgba(255, 255, 255, 0.05);
+      color: #7dd3fc;
+    }
+
+    p.caveat {
+      font-size: 0.75rem; color: var(--muted); margin: 1.5rem 0 0;
+      padding-top: 1rem; border-top: 1px solid rgba(255, 255, 255, 0.05); font-style: italic;
+    }
+
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+    @keyframes scan { 0% { top: 0; opacity: 0; } 10% { opacity: 0.8; } 90% { opacity: 0.8; } 100% { top: 100%; opacity: 0; } }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+    #loading {
+      display: none; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(3, 7, 18, 0.8); backdrop-filter: blur(5px); z-index: 50;
+      border-radius: 16px; justify-content: center; align-items: center; flex-direction: column;
+    }
+    .spinner {
+      width: 50px; height: 50px; border: 3px solid rgba(56, 189, 248, 0.1);
+      border-top-color: var(--accent); border-radius: 50%;
+      animation: spin 1s linear infinite; margin-bottom: 1rem;
+    }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+
+    .loading-text {
+      font-family: 'Orbitron', sans-serif; color: var(--accent); letter-spacing: 2px; animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+  </style>
+</head>
+
+<body>
+
+  <div class="logo-container">
+    <img src="logo.png" alt="Cyber Shield" onerror="this.style.display='none'">
+  </div>
+
+  <main>
+    <div id="loading">
+      <div class="spinner"></div>
+      <div class="loading-text">ANALYZING THREATS...</div>
+    </div>
+
+    <h1>CyberGuard Scanner</h1>
+    <p class="lead">
+      Advanced heuristics engine paired with active threat intelligence feeds.
+    </p>
+
+    <!-- Swapped out form action for vanilla JS handler -->
+    <form id="scan-form" autocomplete="off">
+      <div class="search-bar">
+        <input type="url" name="url" placeholder="Enter target URL (e.g. https://suspicious.com)" required />
+        <button type="submit">Scan</button>
+      </div>
+
+      <div class="options-grid">
+        <div class="option-group">
+          <label class="live-opt">
+            <input type="checkbox" class="checkbox-custom" name="live" value="1" />
+            Active HTTP Probe (SSRF-Safe)
+          </label>
+        </div>
+
+        <div class="option-group">
+          <label class="live-opt">
+            <input type="checkbox" class="checkbox-custom" name="virustotal" value="1" />
+            Inject VirusTotal Reputation
+          </label>
+          <input type="password" name="vt_key" class="api-key-input" placeholder="VirusTotal API Key (Optional Override)" autocomplete="new-password" />
+        </div>
+
+        <div class="option-group">
+          <label class="live-opt">
+            <input type="checkbox" class="checkbox-custom" name="ai" value="1" />
+            Inject OpenAI Analysis
+          </label>
+          <input type="password" name="ai_key" class="api-key-input" placeholder="OpenAI API Key (Optional Override)" autocomplete="new-password" />
+        </div>
+      </div>
+    </form>
+
+    <div id="result-container" style="display:none;"></div>
+  </main>
+
+  <script>
+    document.getElementById('scan-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const loading = document.getElementById('loading');
+      const rc = document.getElementById('result-container');
+      const form = e.target;
+      
+      loading.style.display = 'flex';
+      rc.style.display = 'none';
+      
+      const payload = {
+        url: form.url.value,
+        live: form.live.checked,
+        virustotal: form.virustotal.checked,
+        ai: form.ai.checked,
+        vt_key: form.vt_key.value,
+        ai_key: form.ai_key.value
+      };
+      
+      // Look for custom backend API explicitly, fallback to localhost Python
+      const apiUrl = localStorage.getItem('API_URL') || 'http://127.0.0.1:5000/api/scan';
+
+      try {
+        const resp = await fetch(apiUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        
+        if (!resp.ok) throw Error(`HTTP error ${resp.status}`);
+        
+        const data = await resp.json();
+        renderResult(data);
+      } catch (err) {
+        console.error(err);
+        rc.style.display = 'block';
+        rc.innerHTML = `<div class="card" style="text-align:center; color: var(--bad);">
+          Error connecting to scanner API:<br/><code>${err.message}</code><br/>
+          Ensure <b>http://127.0.0.1:5000</b> is running and Flask CORS is enabled.
+        </div>`;
+      } finally {
+        loading.style.display = 'none';
+      }
+    });
+
+    function renderResult(data) {
+      const rc = document.getElementById('result-container');
+      
+      let verdictClass = data.verdict;
+      let verdictText = '';
+      if (data.verdict === 'likely_safe') verdictText = '✓ SYSTEM CLEAN';
+      else if (data.verdict === 'suspicious') verdictText = '⚠ ANOMALY DETECTED';
+      else verdictText = '☠ DEADLY THREAT';
+      
+      let hostHtml = data.normalized_host ? 
+        `<p class="score" style="margin-bottom: 1rem;">Target Host: <code style="color:var(--accent)">${data.normalized_host}</code></p>` : '';
+        
+      let findingsHtml = '';
+      if (data.findings && data.findings.length > 0) {
+        findingsHtml = `<ul class="findings">` + data.findings.map(f => `
+          <li>
+            <span>${f.message}</span>
+            <span class="code">${f.code}</span>
+          </li>
+        `).join('') + `</ul>`;
+      } else {
+        findingsHtml = `<p class="score" style="text-align:center; padding: 1rem 0; color: var(--ok);">No heuristic signatures identified in path structure.</p>`;
+      }
+      
+      let featuresHtml = '';
+      if (data.features) {
+        featuresHtml = `
+        <div class="live-details">
+          <h3>LEXICAL TELEMETRY</h3>
+          <pre>${JSON.stringify(data.features, null, 2)}</pre>
+        </div>`;
+      }
+      
+      let liveHtml = '';
+      if (data.live) {
+        liveHtml = `
+        <div class="live-details">
+          <h3>ACTIVE PROBE METADATA</h3>
+          <pre>${JSON.stringify(data.live, null, 2)}</pre>
+        </div>`;
+      }
+      
+      let caveatHtml = '';
+      if (data.scoring_note) {
+        caveatHtml = `<p class="caveat">${data.scoring_note}</p>`;
+      }
+      
+      rc.innerHTML = `
+      <div class="card">
+        <div class="scanner-line"></div>
+        <div class="verdict-header">
+          <span class="verdict ${verdictClass}">${verdictText}</span>
+          <p class="score">Risk Index: <strong>${data.risk_score}</strong> / 100</p>
+        </div>
+        ${hostHtml}
+        ${findingsHtml}
+        ${featuresHtml}
+        ${liveHtml}
+        ${caveatHtml}
+      </div>`;
+      rc.style.display = 'block';
+    }
+  </script>
+</body>
+</html>
