@@ -56,8 +56,13 @@ def _auto_update_urlhaus(ds_path: Path):
 
 def create_app() -> Flask:
     app = Flask(__name__)
-    # Full CORS: r"/api/*" is regex (repeat "/"), so it does NOT match "/api/scan".
-    CORS(app)
+    # Allow all origins - covers Netlify, Render previews, and local dev.
+    CORS(
+        app,
+        origins=["*"],
+        allow_headers=["Content-Type", "Authorization"],
+        methods=["GET", "POST", "OPTIONS"],
+    )
     frontend_dir = Path(__file__).resolve().parent / "frontend"
     base = load_blocklist_file(_blocklist_path())
     
@@ -73,6 +78,11 @@ def create_app() -> Flask:
     @app.get("/")
     def serve_index():
         return send_from_directory(frontend_dir, "index.html")
+
+    @app.get("/health")
+    def health():
+        """Keep-alive endpoint for Render / UptimeRobot."""
+        return jsonify({"status": "ok"}), 200
 
     @app.post("/api/scan")
     def api_scan():

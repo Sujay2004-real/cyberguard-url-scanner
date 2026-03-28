@@ -550,14 +550,62 @@
   </main>
 
   <script>
+    // ─── API URL ──────────────────────────────────────────────────────────────
+    // Update RENDER_API_BASE when you deploy to Render.
+    const RENDER_API_BASE = 'https://cyberguard-api-grx6.onrender.com';
+
+    function resolveScanApiUrl() {
+      const custom = localStorage.getItem('API_URL');
+      if (custom) return custom.replace(/\/$/, '') + '/api/scan';
+      const { protocol, hostname, origin } = window.location;
+      if (protocol === 'file:') return 'http://127.0.0.1:5000/api/scan';
+      if (hostname === 'localhost' || hostname === '127.0.0.1')
+        return `${origin}/api/scan`;
+      return `${RENDER_API_BASE}/api/scan`;
+    }
+
+    // ─── Fetch with timeout + retry for Render cold starts ───────────────────
+    async function fetchWithTimeout(url, options, timeoutMs) {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), timeoutMs);
+      try {
+        return await fetch(url, { ...options, signal: controller.signal });
+      } finally {
+        clearTimeout(timer);
+      }
+    }
+
+    async function scanWithRetry(apiUrl, payload, onWarmingUp) {
+      // First attempt – 12 s (fast path)
+      try {
+        return await fetchWithTimeout(apiUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        }, 12000);
+      } catch (firstErr) {
+        // If aborted (timeout) or network error, assume Render cold start.
+        onWarmingUp();  // show warm-up message
+        // Second attempt – 60 s (enough for Render free tier to boot)
+        return await fetchWithTimeout(apiUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        }, 60000);
+      }
+    }
+
+    // ─── Form submit ──────────────────────────────────────────────────────────
     document.getElementById('scan-form').addEventListener('submit', async (e) => {
       e.preventDefault();
 
       const loading = document.getElementById('loading');
+      const loadingText = document.querySelector('.loading-text');
       const rc = document.getElementById('result-container');
       const form = e.target;
 
       loading.style.display = 'flex';
+      loadingText.textContent = 'ANALYZING THREATS...';
       rc.style.display = 'none';
 
       const payload = {
@@ -569,25 +617,12 @@
         ai_key: form.ai_key.value
       };
 
-
-      function resolveScanApiUrl() {
-        const custom = localStorage.getItem('API_URL');
-        if (custom) return custom;
-        const { protocol, hostname, origin } = window.location;
-        if (protocol === 'file:') return 'http://127.0.0.1:5000/api/scan';
-        if (hostname === 'localhost' || hostname === '127.0.0.1')
-          return `${origin}/api/scan`;
-        return 'https://cyberguard-api-grx6.onrender.com/api/scan';
-      }
       const apiUrl = resolveScanApiUrl();
 
-
-
       try {
-        const resp = await fetch(apiUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
+        const resp = await scanWithRetry(apiUrl, payload, () => {
+          // Cold-start callback – update loading text
+          loadingText.textContent = 'WARMING UP API...';
         });
 
         if (!resp.ok) throw Error(`HTTP error ${resp.status}`);
@@ -596,14 +631,21 @@
         renderResult(data);
       } catch (err) {
         console.error(err);
+        const isTimeout = err.name === 'AbortError';
         rc.style.display = 'block';
         rc.innerHTML = `<div class="card" style="text-align:center; color: var(--bad);">
-          Error connecting to scanner API:<br/><code>${err.message}</code><br/>
-          Start the server with <code>python app.py</code>, then open the app at <b>http://127.0.0.1:5000/</b> (same host/port as the API), or set <code>localStorage.setItem('API_URL','http://127.0.0.1:5000/api/scan')</code> if you use another dev server.
-          Request URL: <b>${apiUrl}</b>
+          <p style="font-size:1.1rem; margin:0 0 0.75rem;">⚠ ${isTimeout ? 'API timed out' : 'Connection failed'}</p>
+          <code style="font-size:0.8rem;">${err.message}</code>
+          <p style="margin:1rem 0 0; font-size:0.85rem; color:var(--muted);">
+            ${isTimeout
+              ? 'The Render free-tier API is taking too long to wake up. Wait 30 s and try again, or <a href="https://render.com" style="color:var(--accent)">check your Render dashboard</a>.'
+              : `Ensure the backend is running at <b>${apiUrl}</b> and Flask-CORS is enabled.`
+            }
+          </p>
         </div>`;
       } finally {
         loading.style.display = 'none';
+        loadingText.textContent = 'ANALYZING THREATS...';
       }
     });
 
