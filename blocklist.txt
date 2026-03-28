@@ -1,0 +1,6 @@
+# One entry per line. Lines starting with # are ignored.
+# - Bare hostname: matches that host and subdomains (e.g. evil.com → *.evil.com).
+# - Full URL with path: exact match + path-prefix match (e.g. https://evil.com/bad/payload matches longer paths and ?query on same path).
+# Example (commented):
+# malware.example
+# https://malware.example/path/to/bad

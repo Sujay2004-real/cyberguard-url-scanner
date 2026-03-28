@@ -1,0 +1,6 @@
+# Optional: export hosts from a public phishing/malware URL list (PhishTank CSV, URLhaus host list, etc.)
+# and point MALICIOUS_URL_DATASET at this file. One full URL or bare hostname per line.
+#
+# Example (RFC 2606-style reserved names only — replace with real research data locally):
+# http://phishing.example.invalid/login
+# malware-sample.test
