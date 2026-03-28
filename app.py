@@ -4,7 +4,7 @@ import os
 import time
 from pathlib import Path
 
-from flask import Flask, current_app, jsonify, request
+from flask import Flask, current_app, jsonify, request, send_from_directory
 from flask_cors import CORS
 
 from blocklist_engine import EMPTY_BLOCKLIST, load_blocklist_file, merge_blocklist_indices
@@ -56,7 +56,8 @@ def _auto_update_urlhaus(ds_path: Path):
 
 def create_app() -> Flask:
     app = Flask(__name__)
-    CORS(app)
+    CORS(app, resources={r"/api/*": {"origins": "*"}})
+    frontend_dir = Path(__file__).resolve().parent / "frontend"
     base = load_blocklist_file(_blocklist_path())
     
     ds_path = _dataset_blocklist_path()
@@ -67,6 +68,10 @@ def create_app() -> Flask:
     
     ds_ix = load_dataset_blocklist(ds_path) if ds_path and ds_path.exists() else EMPTY_BLOCKLIST
     app.config["BLOCKLIST"] = merge_blocklist_indices(base, ds_ix)
+
+    @app.get("/")
+    def serve_index():
+        return send_from_directory(frontend_dir, "index.html")
 
     @app.post("/api/scan")
     def api_scan():

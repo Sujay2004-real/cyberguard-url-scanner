@@ -593,7 +593,8 @@
         rc.style.display = 'block';
         rc.innerHTML = `<div class="card" style="text-align:center; color: var(--bad);">
           Error connecting to scanner API:<br/><code>${err.message}</code><br/>
-          Ensure your backend URL (<b>${apiUrl}</b>) is correct and CORS is enabled.
+          Start the server with <code>python app.py</code>, then open <b>http://127.0.0.1:5000/</b> (not the HTML file from disk).
+          Your API URL: <b>${apiUrl}</b>
         </div>`;
       } finally {
         loading.style.display = 'none';
